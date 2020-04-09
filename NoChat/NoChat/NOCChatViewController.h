@@ -35,6 +35,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface NOCChatViewController : UIViewController <UICollectionViewDataSource, UICollectionViewDelegate, NOCChatCollectionViewLayoutDelegate, NOCChatInputPanelDelegate, NOCChatItemCellDelegate>
 
+@property (nullable, nonatomic, strong) UITextView *headerView;
+@property (nonatomic, assign) NSString *headerText;
+
 @property (nullable, nonatomic, strong) NOCChatContainerView *containerView;
 @property (nullable, nonatomic, strong) UIImageView *backgroundView;
 

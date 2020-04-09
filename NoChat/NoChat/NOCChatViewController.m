@@ -223,7 +223,60 @@
 
 - (void)setupContainerView
 {
-    _containerView = [[NOCChatContainerView alloc] initWithFrame:self.view.bounds];
+
+    CGRect frame = self.view.bounds;
+    NSMutableParagraphStyle *style =  [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+    style.alignment = NSTextAlignmentLeft;
+    style.firstLineHeadIndent = 10.0f;
+    style.headIndent = 10.0f;
+    style.tailIndent = -10.0f;
+
+    NSMutableDictionary *attributesDictionary = [NSMutableDictionary dictionary];
+    [attributesDictionary setObject:[UIFont systemFontOfSize:17] forKey:NSFontAttributeName];
+    [attributesDictionary setObject:[UIColor blackColor] forKey:NSForegroundColorAttributeName];
+    [attributesDictionary setObject:style forKey:NSParagraphStyleAttributeName];
+
+    NSAttributedString *attrText = [[NSAttributedString alloc] initWithString: self.headerText attributes:attributesDictionary];
+
+    int headerHeight = 40;
+
+    CGRect headerFrame = frame;
+    headerFrame.size.height = headerHeight;
+
+    _headerView = [[UITextView alloc] initWithFrame:headerFrame];
+    _headerView.attributedText = attrText;
+
+    if (@available(iOS 13.0, *)) {
+        _headerView.backgroundColor = [UIColor secondarySystemBackgroundColor];
+    } else {
+        // Fallback on earlier versions
+        _headerView.backgroundColor = [UIColor colorWithRed:240./255. green:240./255. blue:240./255. alpha:1.];
+    }
+
+    _headerView.textAlignment = NSTextAlignmentLeft;
+    _headerView.textColor = [UIColor blackColor];
+
+    if (@available(iOS 13.0, *)) {
+        _headerView.textColor = [UIColor labelColor];
+    } else {
+         _headerView.textColor = [UIColor blackColor];
+    }
+
+    [_headerView setFont:[UIFont systemFontOfSize:16]];
+    _headerView.editable = NO;
+    _headerView.dataDetectorTypes = UIDataDetectorTypeAll;
+
+    CGSize size=[_headerView sizeThatFits:CGSizeMake(headerFrame.size.width, CGFLOAT_MAX)];
+    headerFrame.size.height = size.height;
+    headerHeight = size.height;
+    [_headerView setFrame:headerFrame];
+    [self.view addSubview:_headerView];
+
+    CGRect containerFrame = frame;
+    containerFrame.origin.y = headerHeight;
+    containerFrame.size.height -= headerHeight;
+
+    _containerView = [[NOCChatContainerView alloc] initWithFrame:containerFrame];
     _containerView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     _containerView.backgroundColor = [UIColor whiteColor];
     _containerView.clipsToBounds = YES;
